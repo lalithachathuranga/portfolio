@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lalitha Chathuranga | Professional Photographer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-black: #0a0a0a;
+            --secondary-black: #141414;
+            --dark-gray: #1a1a1a;
+            --medium-gray: #2a2a2a;
+            --light-gray: #888;
+            --white: #ffffff;
+            --accent: #e0e0e0;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-black);
+            color: var(--white);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            letter-spacing: 0.02em;
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-black);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .preloader-content {
+            text-align: center;
+        }
+
+        .preloader-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .preloader-line {
+            width: 0;
+            height: 1px;
+            background: var(--white);
+            margin: 20px auto;
+            animation: lineExpand 1.5s ease forwards 0.5s;
+        }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: translateY(20px); }
+        }
+
+        @keyframes lineExpand {
+            to { width: 200px; }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: var(--transition);
+            background: transparent;
+        }
+
+        nav.scrolled {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 15px 5%;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--white);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 300;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--white);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .mobile-menu-btn span {
+            width: 25px;
+            height: 1px;
+            background: var(--white);
+            transition: var(--transition);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: heroReveal 1.2s ease forwards 1.5s;
+        }
+
+        @keyframes heroReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 300;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            letter-spacing: 0.4em;
+            text-transform: uppercase;
+            font-weight: 300;
+            margin-bottom: 3rem;
+            color: var(--accent);
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 18px 40px;
+            border: 1px solid var(--white);
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--white);
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .cta-btn:hover::before {
+            left: 0;
+        }
+
+        .cta-btn:hover {
+            color: var(--primary-black);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 2.5s;
+        }
+
+        .scroll-indicator span {
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--light-gray);
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 60px;
+            background: linear-gradient(to bottom, var(--white), transparent);
+            animation: scrollBounce 2s infinite;
+        }
+
+        @keyframes scrollBounce {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(10px); opacity: 0.5; }
+        }
+
+        /* Section Styles */
+        section {
+            padding: 120px 5%;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .section-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 1px;
+            background: var(--white);
+        }
+
+        .section-header p {
+            color: var(--light-gray);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 30px auto 0;
+            font-weight: 300;
+        }
+
+        /* About Section */
+        .about {
+            background: var(--secondary-black);
+        }
+
+        .about-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-image {
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.8s ease;
+        }
+
+        .about-image.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.8s ease;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .about-image::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: -20px;
+            bottom: -20px;
+            border: 1px solid var(--medium-gray);
+            z-index: -1;
+            transition: var(--transition);
+        }
+
+        .about-image:hover::before {
+            top: 10px;
+            left: 10px;
+            right: -10px;
+            bottom: -10px;
+        }
+
+        .about-content {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.8s ease 0.2s;
+        }
+
+        .about-content.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .about-content h3 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .about-content p {
+            color: var(--light-gray);
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .stat-item h4 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .stat-item p {
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--light-gray);
+        }
+
+        /* Portfolio Section */
+        .portfolio {
+            background: var(--primary-black);
+        }
+
+        .filter-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .filter-buttons.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .filter-btn {
+            background: none;
+            border: none;
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 10px 0;
+            position: relative;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .filter-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--white);
+            transition: var(--transition);
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            color: var(--white);
+        }
+
+        .filter-btn.active::after,
+        .filter-btn:hover::after {
+            width: 100%;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.6s ease;
+        }
+
+        .gallery-item.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .gallery-item.hidden {
+            display: none;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: var(--transition);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay h4 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-overlay p {
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--light-gray);
+            transform: translateY(20px);
+            transition: transform 0.4s ease 0.1s;
+        }
+
+        .gallery-item:hover .gallery-overlay h4,
+        .gallery-item:hover .gallery-overlay p {
+            transform: translateY(0);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            display: block;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: var(--white);
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .lightbox-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--white);
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .lightbox-prev { left: 20px; }
+        .lightbox-next { right: 20px; }
+
+        /* Services Section */
+        .services {
+            background: var(--secondary-black);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: var(--dark-gray);
+            padding: 50px 40px;
+            border: 1px solid var(--medium-gray);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .service-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--white);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--white);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            opacity: 0.8;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+
+        .service-card p {
+            color: var(--light-gray);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .price {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--white);
+        }
+
+        .price span {
+            font-size: 0.9rem;
+            color: var(--light-gray);
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Contact Section */
+        .contact {
+            background: var(--primary-black);
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact-info {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.8s ease;
+        }
+
+        .contact-info.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .contact-info h3 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+
+        .contact-info p {
+            color: var(--light-gray);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .contact-details {
+            margin-bottom: 40px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            color: var(--light-gray);
+        }
+
+        .contact-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-links a {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--medium-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+
+        .social-links a:hover {
+            background: var(--white);
+            color: var(--primary-black);
+            border-color: var(--white);
+            transform: translateY(-3px);
+        }
+
+        .contact-form {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: all 0.8s ease 0.2s;
+        }
+
+        .contact-form.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--medium-gray);
+            padding: 15px 0;
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group label {
+            position: absolute;
+            left: 0;
+            top: 15px;
+            color: var(--light-gray);
+            pointer-events: none;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group input:not(:placeholder-shown),
+        .form-group textarea:not(:placeholder-shown) {
+            border-bottom-color: var(--white);
+        }
+
+        .form-group input:focus + label,
+        .form-group textarea:focus + label,
+        .form-group input:not(:placeholder-shown) + label,
+        .form-group textarea:not(:placeholder-shown) + label {
+            top: -10px;
+            font-size: 0.8rem;
+            color: var(--white);
+        }
+
+        .submit-btn {
+            background: var(--white);
+            color: var(--primary-black);
+            border: none;
+            padding: 18px 50px;
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-black);
+            transition: var(--transition);
+            z-index: 0;
+        }
+
+        .submit-btn:hover::before {
+            left: 0;
+        }
+
+        .submit-btn span {
+            position: relative;
+            z-index: 1;
+            transition: var(--transition);
+        }
+
+        .submit-btn:hover span {
+            color: var(--white);
+        }
+
+        .form-message {
+            margin-top: 20px;
+            padding: 15px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .form-message.success {
+            display: block;
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 3px solid var(--white);
+        }
+
+        .form-message.error {
+            display: block;
+            background: rgba(255, 0, 0, 0.1);
+            border-left: 3px solid #ff4444;
+            color: #ff8888;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--secondary-black);
+            padding: 60px 5% 30px;
+            text-align: center;
+            border-top: 1px solid var(--medium-gray);
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .footer-text {
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+
+        .back-to-top {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--medium-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 40px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .back-to-top:hover {
+            background: var(--white);
+            color: var(--primary-black);
+            border-color: var(--white);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            color: var(--light-gray);
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 968px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 100%;
+                height: 100vh;
+                background: var(--primary-black);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 30px;
+                transition: var(--transition);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            .about-container,
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 60px;
+            }
+
+            .about-image,
+            .about-content,
+            .contact-info,
+            .contact-form {
+                transform: translateY(30px);
+            }
+
+            .about-image.visible,
+            .about-content.visible,
+            .contact-info.visible,
+            .contact-form.visible {
+                transform: translateY(0);
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 15px;
+            }
+
+            .stats {
+                justify-content: center;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-buttons {
+                gap: 15px;
+            }
+
+            .filter-btn {
+                font-size: 0.8rem;
+            }
+
+            .stat-item h4 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Utility Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-content">
+            <div class="preloader-text">Lalitha Chathuranga</div>
+            <div class="preloader-line"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="#" class="logo">Lalitha Chathuranga</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="mobile-menu-btn" id="mobileMenuBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-slider">
+            <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1920');"></div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1920');"></div>
+            <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920');"></div>
+        </div>
+        <div class="hero-content">
+            <h1>Lalitha Chathuranga</h1>
+            <p class="hero-subtitle">Professional Photographer</p>
+            <a href="#portfolio" class="cta-btn">View Portfolio</a>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="section-header reveal">
+            <h2>About Me</h2>
+            <p>Photography, for me, is more than just taking pictures it’s about storytelling.
+I’m 𝐋𝐀𝐋𝐈𝐓𝐇𝐀 𝐂𝐇𝐀𝐓𝐇𝐔𝐑𝐀𝐍𝐆𝐀, a photographer who captures moods, emotions, and moments with a cinematic touch. Every frame is carefully composed to reflect beauty, depth, and authenticity.<br>Owner & Photographer @DreamView Photography
+</p>
+        </div>
+        <div class="about-container">
+            <div class="about-image reveal">
+                <img src="images/Lalitha_Chathuranga.jpg" alt="Lalitha Chathuranga - Photographer">
+            </div>
+            <div class="about-content reveal">
+                <h3>Visual Storyteller & Light Chaser</h3>
+                <p>With over 3 years of experience behind the lens, I specialize in capturing the raw, unfiltered beauty of life's most precious moments. My approach combines cinematic composition with an intimate, documentary-style perspective.</p>
+                <p>Whether it's the tender glance between newlyweds, the wild beauty of untouched landscapes, or the authentic expressions in portrait sessions, I believe every frame should evoke emotion and preserve the essence of the moment.</p>
+                <div class="stats">
+                    <div class="stat-item">
+                        <h4>5+</h4>
+                        <p>Projects Completed</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>3+</h4>
+                        <p>Years Experience</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>BEST</h4>
+                        <p>Customer Experience</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section class="portfolio" id="portfolio">
+        <div class="section-header reveal">
+            <h2>Portfolio</h2>
+            <p>Acurated selection of my finest work across portrait, wedding, nature, and cinematic photography.</p>
+        </div>
+        <div class="filter-buttons reveal">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="portrait">Portrait</button>
+            <button class="filter-btn" data-filter="wedding">Wedding</button>
+            <button class="filter-btn" data-filter="nature">Nature</button>
+            <button class="filter-btn" data-filter="cinematic">Cinematic</button>
+        </div>
+        <div class="gallery-grid" id="galleryGrid">
+            <!-- Gallery items will be populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">&times;</button>
+        <button class="lightbox-nav lightbox-prev" id="lightboxPrev">&#10094;</button>
+        <div class="lightbox-content">
+            <img src="" alt="" class="lightbox-img" id="lightboxImg">
+        </div>
+        <button class="lightbox-nav lightbox-next" id="lightboxNext">&#10095;</button>
+    </div>
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="section-header reveal">
+            <h2>Services</h2>
+            <p>Professional photography packages tailored to capture your unique story with elegance and artistry.</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card reveal">
+                <div class="service-icon">📷</div>
+                <h3>Portrait(Basic) Sessions</h3>
+                <p>Professional headshots, lifestyle portraits, and creative conceptual shoots. Includes 1-Hour session, 25+ edited photos,all Raw photos & Online Gallery.</p>
+                <div class="price">LKR.12500 <span>/ Session</span></div>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon">📷ᴠɪᴘ</div>
+                <h3>Portrait(ᴠɪᴘ) Sessions</h3>
+                <p>Professional headshots, lifestyle portraits, and creative conceptual shoots. Includes 2-Hours session, 35+ edited photos,all Raw photos and Online Gallery & 2 minutes Cinematic Video & 1 High Quality Framed Photo.</p>
+                <div class="price">LKR.17000 <span>/ Session</span></div>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon">♡</div>
+                <h3>Couple Shoot </h3>
+                <p>Capturing love, connection, and timeless moments between two hearts. Includes 2-hours coverage, 35+ edited & Highend Retouched images,Online Gallery, 2-5 minutes cinematic video & 1 High Quality Framed Photo.</p>
+                <div class="price">LKR.20000 <span>/ Session</span></div>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon">💍</div>
+                <h3>Engagement Photography</h3>
+                <p>Complete coverage of your special day. Includes 8-hour coverage, 120+ edited images,Online Gallery,Instant Delivery & FREE Couple Shoot( 35+ edited photos) & Online Gallery.</p>
+                <div class="price">LKR.35000 <span>/ Full Event</span></div>
+            </div>
+            <div class="service-card reveal">
+                <div class="service-icon">🎓</div>
+                <h3>Convocation Shoot</h3>
+                <p>Years of dedication, one unforgettable moment. Let’s frame your success.Online Gallery,35+ edited & retouched images,Short & Cinematic Video,Online Gallery,All Raw Photos,Suprise Gift & 1 High Quality Framed Photo</p>
+                <div class="price">LKR.20000 <span>/ Session</span></div>
+            </div>
+<div class="service-card reveal">
+                <div class="service-icon">⾕</div>
+                <h3>Architectural & Landscape Photography</h3>
+                <p>Framing spaces and landscapes with a cinematic eye for detail and composition,Online Gallery,35+ edited images,5-10 minutes Cinematic Video.Includes 2-3 Hours coverage & Online Gallery.</p>
+                <div class="price">LKR.25000-55000 <span>/ Session</span></div>
+            </div>
+<div class="service-card reveal">
+                <div class="service-icon">🏢</div>
+                <h3>Events Photography</h3>
+                <p>Professional coverage for conferences, galas, and corporate gatherings. Includes same-day highlights and full gallery delivery & Online Gallery.</p>
+                <div class="price">LKR.30000-50000<span>/Full Event</span></div>
+        </div>
+<div class="service-card reveal">
+                <div class="service-icon">🎥</div>
+                <h3>Videography</h3>
+                <p>Our videography blends creative storytelling with professional-grade production. From concept to final cut, we focus on quality, flow, and detail to deliver videos that feel polished, impactful, and timeless.</p>
+                <div class="price">Coming Soon <span>/ Session</span></div>
+        </div>
+<div class="service-card reveal">
+                <div class="service-icon">✍️</div>
+                <h3>Editing & Retouching Service</h3>
+                <p>We provide high-end premium retouching and professional photo editing to give your images a flawless, cinematic finish.
+Each photo is carefully enhanced with natural skin retouching, accurate color correction, and sharp detail refinement.
+We maintain a realistic look while elevating overall quality and elegance.
+Perfect for portraits, weddings, fashion, and commercial photography.Natural.Clean. Premium.<br> ⚠️ (To be eligible for this service,your projectmust contain at least 15 Raw Photos)</p>
+                <div class="price">LKR.125  <span>/ Session</span></div>
+        </div>
+<div class="service-card reveal">
+                <div class="service-icon">✨</div>
+                <h3>Custom Projects</h3>
+                <p>Have a unique vision? Let's collaborate on something extraordinary. Custom quotes based on project scope and requirements,Please contact us for custom Projects and ideas.</p>
+                <div class="price">Custom <span>/ Session</span></div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="section-header reveal">
+            <h2>Get In Touch</h2>
+            <p>Ready to create something beautiful together? Let's discuss your vision.</p>
+</div>
+        <div class="contact-container">
+            <div class="contact-info reveal">
+                <h3>Let's Create Art Together</h3>
+                <p>Photography is about capturing moments that tell a story. Together, we can turn emotions, light, and life into timeless art. Whether it’s portraits, couple shoots, or landscapes, every frame becomes a creative collaboration. Let’s make images that inspire, connect, and last forever.</p>
+                
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <i>📥</i>
+                        <span>lalithachathuranga09@gmail.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i>📞</i>
+                        <span>+94 71 620 2814 / +94 74 024 8858</span>
+                    </div>
+                    <div class="contact-item">
+                        <i>📍</i>
+                        <span>Galewela, Sri Lanka</span>
+                    </div>
+                </div>
+
+                <div class="social-links">
+                    <a href="https://www.facebook.com/share/1BQs18B2bX/?mibextid=wwXIfr" aria-label="Facebook">ⓕ</a>
+                    <a href="https://www.facebook.com/share/1DuWt8J1Td/?mibextid=wwXIfr" aria-label="Facebook">f</a>
+                    <a href="https://www.instagram.com/lalitha_chathuranga?igsh=MTh3aHlraXoyMmV3NQ%3D%3D&utm_source=qr" aria-label="Instagram">📷</a>
+                    <a href="https://www.tiktok.com/@dreamview_photography?_r=1&_t=ZS-93vkA8vg2YD" aria-label="TikTok">♪</a>
+                    <a href="https://wa.me/+94740248858" aria-label="WhatsApp">💬</a>
+                </div>
+            </div>
+            <form class="contact-form reveal" id="contactForm">
+                <div class="form-group">
+                    <input type="text" id="name" placeholder=" " required>
+                    <label for="name">Your Name</label>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" placeholder=" " required>
+                    <label for="email">Email Address</label>
+                </div>
+                <div class="form-group">
+                    <select id="service" style="width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--medium-gray); padding: 15px 0; color: var(--white); font-family: 'Inter', sans-serif; font-size: 1rem; outline: none; cursor: pointer;">
+                        <option value="" disabled selected style="background: var(--dark-gray);">Select a Service</option>
+                        <option value="portrait" style="background: var(--dark-gray);">Portrait Session</option>
+                        <option value="wedding" style="background: var(--dark-gray);">Wedding Photography</option>
+                        <option value="nature" style="background: var(--dark-gray);">Nature & Landscape</option>
+                        <option value="cinematic" style="background: var(--dark-gray);">Cinematic Shoot</option>
+                        <option value="corporate" style="background: var(--dark-gray);">Corporate Event</option>
+                        <option value="custom" style="background: var(--dark-gray);">Custom Project</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" placeholder=" " required></textarea>
+                    <label for="message">Tell me about your project...</label>
+                </div>
+                <button type="submit" class="submit-btn"><span>Send Message</span></button>
+                <div class="form-message" id="formMessage"></div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">Lalitha Chathuranga</div>
+            <p class="footer-text">Capturing moments, creating memories, telling stories through light and shadow.</p>
+            <a href="#home" class="back-to-top" id="backToTop">↑</a>
+            <p class="copyright">Copyright © 2026 Lalitha Chathuranga. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Preloader
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('hidden');
+            }, 2000);
+        });
+
+        // Gallery Data
+        const galleryData = [
+            { id: 1, category: 'portrait', title: 'Ethereal Beauty', src: 'images/ethereal-beauty.jpg?w=800', fullSrc: 'images/ethereal-beauty.jpg?w=1920' },
+            { id: 2, category: 'wedding', title: 'Eternal Vows', src: 'images/eternal-vows.jpg?w=800', fullSrc: 'images/eternal-vows.jpg?w=1920' },
+            { id: 3, category: 'nature', title: 'Mountain Whispers', src: 'images/mountain-whisper.jpg?w=800', fullSrc: 'images/mountain-whisper.jpg?w=1920' },
+            { id: 4, category: 'cinematic', title: 'Urban Dreams', src: 'images/urban-dreams.jpg?w=800', fullSrc: 'images/urban-dreams.jpg?w=1920' },
+            { id: 5, category: 'portrait', title: 'Silent Strength', src: 'images/silent-strength.jpg?w=800', fullSrc: 'images/silent-strength.jpg?w=1920' },
+            { id: 6, category: 'wedding', title: 'First Dance', src: 'images/first-dance.jpg?w=800', fullSrc: 'images/first-dance.jpg?w=1920' },
+            { id: 7, category: 'nature', title: 'Golden Hour', src: 'images/golden-hour.jpg?w=800', fullSrc: 'images/golden-hour.jpg?w=1920' },
+            { id: 8, category: 'cinematic', title: 'Noir Nights', src: 'images/noir-nights.jpg?w=800', fullSrc: 'images/noir-nights.jpg?w=1920' },
+            { id: 9, category: 'portrait', title: 'Raw Emotion', src: 'images/raw-emotion.jpg?w=800', fullSrc: 'images/raw-emotion.jpg?w=1920' },
+            { id: 10, category: 'wedding', title: 'Bridal Portrait', src: 'images/bridal-portrait.jpg?w=800', fullSrc: 'images/bridal-portrait.jpg?w=1920' },
+            { id: 11, category: 'nature', title: 'Ocean Solitude', src: 'images/ocean-solitude.jpg?w=800', fullSrc: 'images/ocean solitude.jpg?w=1920' },
+            { id: 12, category: 'cinematic', title: 'Light & Shadow', src: 'images/light-&-shadow.jpg?w=800', fullSrc: 'images/light-&-shadow.jpg?w=1920' }
+        ];
+
+        // Initialize Gallery
+        function initGallery() {
+            const grid = document.getElementById('galleryGrid');
+            galleryData.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `gallery-item ${item.category}`;
+                div.innerHTML = `
+                    <img src="${item.src}" alt="${item.title}" loading="lazy">
+                    <div class="gallery-overlay">
+                        <h4>${item.title}</h4>
+                        <p>${item.category}</p>
+                    </div>
+                `;
+                div.addEventListener('click', () => openLightbox(index));
+                grid.appendChild(div);
+                
+                // Staggered animation
+                setTimeout(() => {
+                    div.classList.add('visible');
+                }, index * 100);
+            });
+        }
+
+        // Filter Functionality
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const filter = btn.getAttribute('data-filter');
+                const items = document.querySelectorAll('.gallery-item');
+                
+                items.forEach((item, index) => {
+                    if (filter === 'all' || item.classList.contains(filter)) {
+                        item.classList.remove('hidden');
+                        setTimeout(() => {
+                            item.classList.add('visible');
+                        }, index * 50);
+                    } else {
+                        item.classList.remove('visible');
+                        setTimeout(() => {
+                            item.classList.add('hidden');
+                        }, 300);
+                    }
+                });
+            });
+        });
+
+        // Lightbox Functionality
+        let currentImageIndex = 0;
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+
+        function openLightbox(index) {
+            currentImageIndex = index;
+            updateLightbox();
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function updateLightbox() {
+            const item = galleryData[currentImageIndex];
+            lightboxImg.src = item.fullSrc;
+            lightboxImg.alt = item.title;
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % galleryData.length;
+            updateLightbox();
+        }
+
+        function prevImage() {
+            currentImageIndex = (currentImageIndex - 1 + galleryData.length) % galleryData.length;
+            updateLightbox();
+        }
+
+        document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+        document.getElementById('lightboxNext').addEventListener('click', (e) => {
+            e.stopPropagation();
+            nextImage();
+        });
+        document.getElementById('lightboxPrev').addEventListener('click', (e) => {
+            e.stopPropagation();
+            prevImage();
+        });
+
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') nextImage();
+            if (e.key === 'ArrowLeft') prevImage();
+        });
+
+        // Hero Slider
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        setInterval(nextSlide, 5000);
+
+        // Navigation Scroll Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile Menu
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const spans = mobileMenuBtn.querySelectorAll('span');
+            if (navLinks.classList.contains('active')) {
+                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                spans[1].style.opacity = '0';
+                spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+            } else {
+                spans[0].style.transform = '';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = '';
+            }
+        });
+
+        // Close mobile menu when clicking links
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                const spans = mobileMenuBtn.querySelectorAll('span');
+                spans[0].style.transform = '';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = '';
+            });
+        });
+
+        // Scroll Reveal Animation
+        const revealElements = document.querySelectorAll('.reveal, .section-header, .about-image, .about-content, .contact-info, .contact-form, .filter-buttons, .service-card');
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Form Validation and Submission
+        const contactForm = document.getElementById('contactForm');
+        const formMessage = document.getElementById('formMessage');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const service = document.getElementById('service').value;
+            const message = document.getElementById('message').value.trim();
+
+            // Validation
+            if (!name || !email || !message) {
+                showFormMessage('Please fill in all required fields.', 'error');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                showFormMessage('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            // Simulate form submission
+            showFormMessage('Thank you for your message! I\'ll get back to you within 24 hours.', 'success');
+            contactForm.reset();
+            
+            setTimeout(() => {
+                formMessage.className = 'form-message';
+            }, 5000);
+        });
+
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function showFormMessage(text, type) {
+            formMessage.textContent = text;
+            formMessage.className = `form-message ${type}`;
+        }
+
+        // Smooth Scroll for Back to Top
+        document.getElementById('backToTop').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Initialize
+        initGallery();
+
+        // Performance: Pause animations when tab is hidden
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Pause expensive animations
+            } else {
+                // Resume animations
+            }
+        });
+    </script>
+</body>
+</html>
